@@ -1,0 +1,14 @@
+{
+  "name": "libraryserver",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "scripts": {
+    "counterServer": "cd counterServer && npm start",
+    "bookServer": "cd bookServer && npm start",
+    "dev": "concurrently \"npm run bookServer\" \"npm run counterServer\"",
+    "start": "concurrently \"npm run bookServer\" \"npm run counterServer\""
+  }
+}

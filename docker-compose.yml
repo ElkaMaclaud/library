@@ -1,0 +1,16 @@
+services:
+  storage:
+    image: redis
+  server_counter:
+    build: ./counterServer
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - REDIS_URL=redis://storage
+  book_server:
+    build: ./bookServer
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
