@@ -126,8 +126,8 @@ router.put("/:id", async (req, res) => {
     const { id } = req.params
     const book = req.body
     try {
-        const bookPut = await Book.findByIdAndUpdate(id, book, { new: true, runValidators: true }).select("-__v")
-        res.json(bookPut)
+        const newBook = await Book.findByIdAndUpdate(id, book, { new: true, runValidators: true }).select("-__v")
+        res.json(newBook)
     } catch(e) {
         res
             .status(404)

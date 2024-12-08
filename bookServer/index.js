@@ -5,10 +5,10 @@ const dotenv = require("dotenv")
 
 const errorMiddleware = require("./middlewares/error")
 
-// const formData = require("express-form-data")
-
-const bookRouter = require("./routes/api/book")
-const userRouter = require("./routes/api/user")
+const indexRouter = require('./routes/index');
+const bookRouter = require("./routes/book")
+const bookApiRouter = require("./routes/api/book")
+const userApiRouter = require("./routes/api/user")
 
 dotenv.config()
 const PORT = process.env.PORT || 3000
@@ -17,11 +17,14 @@ const MONGO_PASSWORD = process.env.MONGO_PASSWORD
 
 const app = express()
 
-// app.use(formData.parse())
 app.use(express.json())
+app.use(express.urlencoded({ extended: false }));
+app.set("view engine", "ejs");
 
-app.use("/api/user", userRouter)
-app.use("/api/book", bookRouter)
+app.use('/', indexRouter)
+app.use('/book', bookRouter)
+app.use("/api/user", userApiRouter)
+app.use("/api/book", bookApiRouter)
 
 app.use(errorMiddleware)
 app.use((err, req, res, next) => {
@@ -33,7 +36,7 @@ app.use((err, req, res, next) => {
 const start = (async () => {
     try {
         await mongoose.connect(`mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@cluster0.0dgu9.mongodb.net/library`)
-        app.listen(PORT, () => console.log(`Сервер запущен на порте ${PORT}`))
+        app.listen(PORT, () => console.log(`Сервер запущен на порту ${PORT}`))
     } catch (error) {
         console.log(`Что-то пошло не так: ${error}`)
     }

@@ -50,7 +50,7 @@ app.get("/counter/:bookId", async (req, res) => {
 const start = (async () => {
     try {
         await mongoose.connect(`mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@cluster0.0dgu9.mongodb.net/library`)
-        app.listen(PORT, () => console.log(`Сервер запущен на порте ${PORT}`))
+        app.listen(PORT, () => console.log(`Сервер запущен на порту ${PORT}`))
     } catch (error) {
         console.log(`Что-то пошло не так: ${error}`)
     }

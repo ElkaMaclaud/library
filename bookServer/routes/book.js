@@ -3,11 +3,11 @@ const router = express.Router();
 const Book = require('../models/Book');
 
 
-router.get('/', (req, res) => {
-    const {book} = stor;
+router.get('/', async (req, res) => {
+    const books = await Book.find();
     res.render("book/index", {
         title: "book",
-        books: book,
+        books,
     });
 });
 
@@ -18,73 +18,64 @@ router.get('/create', (req, res) => {
     });
 });
 
-router.post('/create', (req, res) => {
-    const {book} = stor;
-    const {title, desc} = req.body;
-
-    const newbook = new book(title, desc);
-    book.push(newbook);
-
-    res.redirect('/book')
+router.post('/create', async (req, res) => {
+    const book = req.body
+    const newBook = new Book(book)
+    try {
+        const newBookCreate = await newBook.save()
+        const response = newBookCreate.toObject();
+        delete response.__v;
+        res.redirect('/book')
+    } catch (e) {
+        res.status(500).json({ message: e });
+    }
 });
 
-router.get('/:id', (req, res) => {
-    const {book} = stor;
-    const {id} = req.params;
-    const idx = book.findIndex(el => el.id === id);
+router.get('/:id', async (req, res) => {
+    const { id } = req.params;
 
-    if (idx !== -1) {
+    try {
+        const book = await Book.findById(id).select("-__v")
+
         res.render("book/view", {
             title: "book | view",
-            book: book[idx],
+            book: book,
         });
-    } else {
+    } catch (e) {
         res.status(404).redirect('/404');
     }
 });
 
-router.get('/update/:id', (req, res) => {
-    const {book} = stor;
-    const {id} = req.params;
-    const idx = book.findIndex(el => el.id === id);
-
-    if (idx !== -1) {
+router.get('/update/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const book = await Book.findById(id)
         res.render("book/update", {
             title: "book | view",
-            book: book[idx],
+            book: book,
         });
-    } else {
+    } catch (e) {
         res.status(404).redirect('/404');
     }
 });
 
-router.post('/update/:id', (req, res) => {
-    const {book} = stor;
-    const {id} = req.params;
-    const {title, desc} = req.body;
-    const idx = book.findIndex(el => el.id === id);
-
-    if (idx !== -1) {
-        book[idx] = {
-            ...book[idx],
-            title,
-            desc,
-        };
+router.post('/update/:id', async (req, res) => {
+    const { id } = req.params;
+    const book = req.body
+    try {
+        await Book.findByIdAndUpdate(id, book, { new: true, runValidators: true }).select("-__v")
         res.redirect(`/book/${id}`);
-    } else {
+    } catch (e) {
         res.status(404).redirect('/404');
     }
 });
 
-router.post('/delete/:id', (req, res) => {
-    const {book} = stor;
-    const {id} = req.params;
-    const idx = book.findIndex(el => el.id === id);
-
-    if (idx !== -1) {
-        book.splice(idx, 1);
+router.post('/delete/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        await Book.findByIdAndDelete(id)
         res.redirect(`/book`);
-    } else {
+    } catch(e) {
         res.status(404).redirect('/404');
     }
 });

@@ -10,5 +10,8 @@
     "bookServer": "cd bookServer && npm start",
     "dev": "concurrently \"npm run bookServer\" \"npm run counterServer\"",
     "start": "concurrently \"npm run bookServer\" \"npm run counterServer\""
+  },
+  "dependencies": {
+    "ejs": "^3.1.10"
   }
 }
