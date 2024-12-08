@@ -6,6 +6,7 @@ const dotenv = require("dotenv")
 const errorMiddleware = require("./middlewares/error")
 
 const indexRouter = require('./routes/index');
+const userRouter = require('./routes/user');
 const bookRouter = require("./routes/book")
 const bookApiRouter = require("./routes/api/book")
 const userApiRouter = require("./routes/api/user")
@@ -21,7 +22,8 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }));
 app.set("view engine", "ejs");
 
-app.use('/', indexRouter)
+app.use('/', userRouter)
+app.use('/index', indexRouter)
 app.use('/book', bookRouter)
 app.use("/api/user", userApiRouter)
 app.use("/api/book", bookApiRouter)

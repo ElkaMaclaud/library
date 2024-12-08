@@ -16,5 +16,6 @@ services:
       - "3000:3000"
     environment:
       - PORT=3000
+      - HOST=server_counter
       - MONGO_USER=${MONGO_USER}
       - MONGO_PASSWORD=${MONGO_PASSWORD}
