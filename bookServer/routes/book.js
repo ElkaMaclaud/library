@@ -63,6 +63,7 @@ router.post('/update/:id', async (req, res) => {
     const { id } = req.params;
     const book = req.body
     try {
+        book.description = book.description.trim()
         await Book.findByIdAndUpdate(id, book, { new: true, runValidators: true }).select("-__v")
         res.redirect(`/book/${id}`);
     } catch (e) {
