@@ -38,7 +38,7 @@ router.get("/:id", async (req, res) => {
     
     try {
         const book = await Book.findById(id).select("-__v")
-
+        
         const postOptions = {
             hostname: process.env.HOST,
             port: 3001,
@@ -48,7 +48,6 @@ router.get("/:id", async (req, res) => {
                 'Content-Type': 'application/json',
             },
         };
-
 
         const postRequest = http.request(postOptions, (postResponse) => {
             postResponse.on('data', () => {
@@ -74,7 +73,8 @@ router.get("/:id", async (req, res) => {
                         getResponse.on('end', () => {
                             try {
                                 const finalData = JSON.parse(getData);
-                                res.json({ book, counterData: finalData }); 
+                                const bookData = book.toObject()
+                                res.json({ ...bookData, ...finalData }); 
                             } catch (error) {
                                 console.error("Ошибка при парсинге данных GET:", error);
                                 res.status(500).json({ error: "Ошибка при парсинге данных GET" });

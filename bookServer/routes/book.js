@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const http = require('http');
 const Book = require('../models/Book');
 
 
@@ -33,15 +34,75 @@ router.post('/create', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     const { id } = req.params;
-
     try {
         const book = await Book.findById(id).select("-__v")
-
-        res.render("book/view", {
-            title: "book | view",
-            book: book,
+        const postOptions = {
+            hostname: process.env.HOST,
+            port: 3001,
+            path: `/counter/${id}/incr`,
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        };
+    
+        const postRequest = http.request(postOptions, (postResponse) => {
+            postResponse.on('data', () => {
+            });
+             postResponse.on('end', () => {
+                try {
+                    const getOptions = {
+                        hostname: process.env.HOST,
+                        port: 3001,
+                        path: `/counter/${id}`, 
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    };
+    
+                    const getRequest = http.request(getOptions, (getResponse) => {
+                        let getData = '';
+                        getResponse.on('data', (chunk) => {
+                            getData += chunk;
+                        });
+    
+                        getResponse.on('end', () => {
+                            try {
+                                const finalData = JSON.parse(getData);
+                                const response = book.toObject();
+                                res.render("book/view", {
+                                    title: "book | view",
+                                    book: {...response, ...finalData},
+                                })
+                            } catch (error) {
+                                console.error("Ошибка при парсинге данных GET:", error);
+                                res.status(500).redirect('/404');
+                            }
+                        });
+                    });
+    
+                    getRequest.on('error', (error) => {
+                        console.error("Ошибка при обращении к микросервису (GET):", error);
+                        res.status(500).redirect('/404');;
+                    });
+    
+                    getRequest.end();
+                } catch (error) {
+                    console.error("Ошибка при парсинге данных POST:", error);
+                    res.status(500).redirect('/404');
+                }
+            });
         });
-    } catch (e) {
+    
+        postRequest.on('error', (error) => {
+            console.error("Ошибка при обращении к микросервису (POST):", error);
+            res.status(500).redirect('/404');;
+        });
+    
+        // postRequest.write(JSON.stringify({}));
+        postRequest.end(); 
+    } catch(e) {
         res.status(404).redirect('/404');
     }
 });
