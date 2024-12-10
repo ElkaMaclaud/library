@@ -26,10 +26,65 @@
                         </button>
                     </form>
                 </div>
-
             </div>
         </div>
     </div>
 </div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-4">
+            <h3>Комментарии</h3>
+            <h4>Обсуждение книги <%= book.title %></h4>
+            <div id="list" class="form-group" style="border: 1px solid #ccc; min-height: 100px; border-radius: 5px">
+                <!-- Здесь будут сообщения -->
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-4">
+            <div class="form-group">
+                <label for="message">message</label>
+                <input placeholder="message" type="text" id="message" class="form-control">
+            </div>
+            <button type="submit" id="send" class="btn btn-primary">Отправить</button>
+        </div>
+    </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const roomName = location.pathname.split('/').pop();
+    const socket = io.connect('/', {query: `roomName=${roomName}&userName=Jack`});
+    const boxList = document.querySelector('#list');
+    const message = document.querySelector('#message');
+    const sendAll = document.querySelector('#send');
+
+    const getTmp = (msg) => {
+        return `
+                <div class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+                        <small>${msg.message}</small>
+                        <small class="text-muted">${msg.text}</small>
+                    </div>
+                </div>
+        `;
+    };
+
+    socket.on('book discussion', (msg) => {
+        const div = getTmp(msg);
+        boxList.insertAdjacentHTML('beforeend', div);
+    });
+
+    sendAll.addEventListener('click', () => {
+        socket.emit('book discussion', {
+            message: message.value,
+            text: "jack",
+        });
+        message.value = ""
+    });
+
+</script>
 
 <%- include("../partials/layout-end") %>

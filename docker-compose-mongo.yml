@@ -27,7 +27,7 @@ services:
       - 80:3000
     environment:
       - PORT=3000
-      - DB_USERNAME=${DB_USERNAME:-root}
+      - DB_USERNAME=${DB_USERNAME:-root} 
       - DB_PASSWORD=${DB_PASSWORD:-password}
       - DB_NAME=${DB_NAME:-books_database}
       - DB_HOST=mongodb://mongodb:27017

@@ -2,6 +2,7 @@ const express = require("express")
 const cors = require("cors")
 const mongoose = require("mongoose")
 const dotenv = require("dotenv") 
+const createSocketServer = require("./routes/socket")
 
 const errorMiddleware = require("./middlewares/error")
 
@@ -38,7 +39,8 @@ app.use((err, req, res, next) => {
 const start = (async () => {
     try {
         await mongoose.connect(`mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@cluster0.0dgu9.mongodb.net/library`)
-        app.listen(PORT, () => console.log(`Сервер запущен на порту ${PORT}`))
+        const server = app.listen(PORT, () => console.log(`Сервер запущен на порту ${PORT}`))
+        createSocketServer(server)
     } catch (error) {
         console.log(`Что-то пошло не так: ${error}`)
     }

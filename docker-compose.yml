@@ -3,8 +3,8 @@ services:
     image: redis
   server_counter:
     build: ./counterServer
-    ports:
-      - "3001:3001"
+    # ports:
+    #   - "3001:3001" - Не нужен снаружи
     environment:
       - PORT=3001
       - REDIS_URL=redis://storage
