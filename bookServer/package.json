@@ -22,7 +22,14 @@
     "socket.io": "^4.8.1"
   },
   "devDependencies": {
+    "@eslint/js": "^9.16.0",
+    "@typescript-eslint/eslint-plugin": "^8.18.0",
+    "@typescript-eslint/parser": "^8.18.0",
     "dotenv": "^16.4.7",
-    "ejs": "^3.1.10"
+    "ejs": "^3.1.10",
+    "eslint": "^9.16.0",
+    "globals": "^15.13.0",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.0"
   }
 }
