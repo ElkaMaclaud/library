@@ -1,11 +1,9 @@
-const express = require("express")
-const router = express.Router()
-const path = require("path")
-const fs = require("fs")
-const fileMiddleware = require("../../middlewares/file")
-const http = require('http');
-const Book = require("../../models/Book")
-const dotenv = require("dotenv")
+import fs from "fs"
+// import fileMiddleware from "../../middlewares/file"
+import dotenv from "dotenv"
+import { Request, Response, Router } from 'express';
+import http from 'http';
+import Book from "../../models/Book"
 
 dotenv.config()
 
@@ -27,13 +25,39 @@ dotenv.config()
 // })
 
 
+export interface IBook {
+    title: string,
+    description: string,
+    authors: string,
+    favorite?: string,
+    fileCover?: string,
+    fileName?: string,
+    fileBook: string
+}
 
-router.get("/", async (req, res) => {
-    const book = await Book.find().select("-__v")
+export class BookRepository {
+    constructor(private book: typeof Book, private router: Router) {
+        this.router = Router();
+        this.initRoutes();
+    }
+
+    private initRoutes() {
+        this.router.get('/', this.getBooks.bind(this)); 
+        this.router.get('/:id', this.getBook.bind(this)); 
+        this.router.post('/create', this.createBook.bind(this));
+        this.router.put('/:id', this.updateBook.bind(this));
+        this.router.delete('/:id', this.deleteBook.bind(this));
+        this.router.get("/:id/download", this.getBooks.bind(this)); 
+    }
+
+
+
+async getBooks(req: Request, res: Response) {
+    const book = await this.book.find().select("-__v")
     res.json(book)
-})
+}
 
-router.get("/:id", async (req, res) => {
+async getBook(req: Request, res: Response) {
     const { id } = req.params;
     
     try {
@@ -102,39 +126,40 @@ router.get("/:id", async (req, res) => {
 
         // postRequest.write(JSON.stringify({}));
         postRequest.end(); 
-    } catch(e) {
+    } catch {
         res.status(404).json("Book | not found");
     }
-});
-router.post("/", async (req, res) => {
+};
+async createBook(req: Request, res: Response) {
     const book = req.body
     const newBook = new Book(book)
     try {
       const newBookCreate = await newBook.save()
       const response = newBookCreate.toObject();
-      delete response.__v; 
+      if ('__v' in response) {
+        delete response.__v; 
+    }
     res
         .status(201)
         .json(response)  
-    } catch(e) {
+    } catch(e: unknown) {
         res.status(500).json({message: e});
-    }
-    
-})
+    } 
+}
 
-router.put("/:id", async (req, res) => {
+async updateBook(req: Request, res: Response){
     const { id } = req.params
     const book = req.body
     try {
         const newBook = await Book.findByIdAndUpdate(id, book, { new: true, runValidators: true }).select("-__v")
         res.json(newBook)
-    } catch(e) {
+    } catch {
         res
             .status(404)
             .json("Book | not found")
     }
-})
-router.delete("/:id", async (req, res) => {
+}
+async deleteBook(req: Request, res: Response) {
     const { id } = req.params
     try {
         await Book.findByIdAndDelete(id)
@@ -169,14 +194,14 @@ router.delete("/:id", async (req, res) => {
             res.status(500).json({ error: "Ошибка при обращении к микросервису (GET)" });
         });
         deleteRequest.end()
-    } catch(e) {
+    } catch {
         res
             .status(404)
             .json("Book | not found")
     }
-})
+}
 
-router.get("/:id/download", async (req, res) => {
+async downloadBook(req: Request, res: Response) {
     const { id } = req.params
     const book = await Book.findById(id)
     if (book) {
@@ -193,9 +218,9 @@ router.get("/:id/download", async (req, res) => {
             .status(404)
             .json("Book | not found")
     }
-})
+}
 
-module.exports = router
+}
 
 
 // const { Book } = require("../models")
@@ -216,12 +241,12 @@ module.exports = router
 //     library.Book.push(newBook)
 // })
 
-// router.get("/", (req, res) => {
+// router.get("/", (req: Request, res: Response) => {
 //     const { Book } = library
 //     res.json(Book)
 // })
 
-// router.get("/:id", (req, res) => {
+// router.get("/:id", (req: Request, res: Response) => {
 //     const { id } = req.params;
 //     const idx = library.Book.findIndex(el => el.id === id);
     

@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose")
+import { Schema, model } from "mongoose";
 
 const BookModel = new Schema({
     title: { type: String, required: true, default: "" },
@@ -8,6 +8,7 @@ const BookModel = new Schema({
     fileCover: { type: String, default: "" },
     fileName: { type: String, default: "" },
     fileBook: { type: String, default: "" }
-})
+});
 
-module.exports = model("Book", BookModel)
+
+export default model("Book", BookModel);

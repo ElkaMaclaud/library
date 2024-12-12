@@ -1,18 +1,19 @@
-const express = require("express")
-const cors = require("cors")
-const mongoose = require("mongoose")
-const dotenv = require("dotenv") 
-const createSocketServer = require("./routes/socket")
+import express from "express"
+// import cors from "cors"
+import mongoose from "mongoose"
+import dotenv from "dotenv" 
+import createSocketServer from "./routes/socket"
 
-const errorMiddleware = require("./middlewares/error")
+import errorMiddleware from "./middlewares/error"
 
-const indexRouter = require('./routes/index');
-const userRouter = require('./routes/user');
-const bookRouter = require("./routes/book")
-const bookApiRouter = require("./routes/api/book")
-const userApiRouter = require("./routes/api/user")
+import indexRouter from './routes/index';
+import userRouter from './routes/user';
+import bookRouter from "./routes/book"
+import bookApiRouter from "./routes/api/book"
+import userApiRouter from "./routes/api/user"
 
 dotenv.config()
+
 const PORT = process.env.PORT || 3000
 const MONGO_USER = process.env.MONGO_USER
 const MONGO_PASSWORD = process.env.MONGO_PASSWORD
