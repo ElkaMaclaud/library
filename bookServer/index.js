@@ -9,7 +9,7 @@ import errorMiddleware from "./middlewares/error"
 import indexRouter from './routes/index';
 import userRouter from './routes/user';
 import bookRouter from "./routes/book"
-import bookApiRouter from "./routes/api/book"
+import bookApiRouter from "./routes/book/bookService"
 import userApiRouter from "./routes/api/user"
 
 dotenv.config()

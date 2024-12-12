@@ -1,9 +1,10 @@
 import fs from "fs"
 // import fileMiddleware from "../../middlewares/file"
 import dotenv from "dotenv"
-import { Request, Response, Router } from 'express';
+import { Response } from 'express';
 import http from 'http';
 import Book from "../../models/Book"
+import { injectable } from "inversify";
 
 dotenv.config()
 
@@ -35,32 +36,16 @@ export interface IBook {
     fileBook: string
 }
 
+@injectable()
 export class BookRepository {
-    constructor(private book: typeof Book, private router: Router) {
-        this.router = Router();
-        this.initRoutes();
-    }
+    constructor(private book: typeof Book) {}
 
-    private initRoutes() {
-        this.router.get('/', this.getBooks.bind(this)); 
-        this.router.get('/:id', this.getBook.bind(this)); 
-        this.router.post('/create', this.createBook.bind(this));
-        this.router.put('/:id', this.updateBook.bind(this));
-        this.router.delete('/:id', this.deleteBook.bind(this));
-        this.router.get("/:id/download", this.getBooks.bind(this)); 
-    }
-
-
-
-async getBooks(req: Request, res: Response) {
-    const book = await this.book.find().select("-__v")
-    res.json(book)
+async getBooks() {
+    const books = await this.book.find().select("-__v")
+    return books
 }
 
-async getBook(req: Request, res: Response) {
-    const { id } = req.params;
-    
-    try {
+async getBook(id: string) {
         const book = await Book.findById(id).select("-__v")
         
         const postOptions = {
@@ -98,70 +83,52 @@ async getBook(req: Request, res: Response) {
                             try {
                                 const finalData = JSON.parse(getData);
                                 const bookData = book.toObject()
-                                res.json({ ...bookData, ...finalData }); 
+                                return { ...bookData, ...finalData }; 
                             } catch (error) {
                                 console.error("Ошибка при парсинге данных GET:", error);
-                                res.status(500).json({ error: "Ошибка при парсинге данных GET" });
+                                throw { status: 500, message: "Ошибка при получении книги" };
                             }
                         });
                     });
 
                     getRequest.on('error', (error) => {
                         console.error("Ошибка при обращении к микросервису (GET):", error);
-                        res.status(500).json({ error: "Ошибка при обращении к микросервису (GET)" });
+                        throw { status: 500, error: "Ошибка при обращении к микросервису (GET)" };
                     });
 
                     getRequest.end();
                 } catch (error) {
                     console.error("Ошибка при парсинге данных POST:", error);
-                    res.status(500).json({ error: "Ошибка при парсинге данных POST" });
+                    throw { status: 500, error: "Ошибка при парсинге данных POST" };
                 }
             });
         });
 
         postRequest.on('error', (error) => {
             console.error("Ошибка при обращении к микросервису (POST):", error);
-            res.status(500).json({ error: "Ошибка при обращении к микросервису (POST)" });
+            throw { status: 500, error: "Ошибка при парсинге данных POST" };
         });
 
         // postRequest.write(JSON.stringify({}));
-        postRequest.end(); 
-    } catch {
-        res.status(404).json("Book | not found");
-    }
+        postRequest.end();  
 };
-async createBook(req: Request, res: Response) {
-    const book = req.body
+
+async createBook(book: IBook) {
     const newBook = new Book(book)
-    try {
-      const newBookCreate = await newBook.save()
-      const response = newBookCreate.toObject();
-      if ('__v' in response) {
+    const newBookCreate = await newBook.save()
+    const response = newBookCreate.toObject();
+    if ('__v' in response) {
         delete response.__v; 
     }
-    res
-        .status(201)
-        .json(response)  
-    } catch(e: unknown) {
-        res.status(500).json({message: e});
-    } 
+    return response
 }
 
-async updateBook(req: Request, res: Response){
-    const { id } = req.params
-    const book = req.body
-    try {
-        const newBook = await Book.findByIdAndUpdate(id, book, { new: true, runValidators: true }).select("-__v")
-        res.json(newBook)
-    } catch {
-        res
-            .status(404)
-            .json("Book | not found")
-    }
+async updateBook(id: string, book: IBook){
+    const newBook = await Book.findByIdAndUpdate(id, book, { new: true, runValidators: true }).select("-__v")
+    return newBook
+
 }
-async deleteBook(req: Request, res: Response) {
-    const { id } = req.params
-    try {
+async deleteBook(id: string) {
         await Book.findByIdAndDelete(id)
 
         const deleteOptions = {
@@ -182,27 +149,21 @@ async deleteBook(req: Request, res: Response) {
             deletedResponse.on('end', () => { 
                 try {
                     const finalData = JSON.parse(responseData);
-                    res.json(finalData); 
+                    return finalData; 
                 } catch (error) {
                     console.error("Ошибка при парсинге данных GET:", error);
-                    res.status(500).json({ error: "Ошибка при парсинге данных GET" });
+                    throw { status: 500, message: "Ошибка при получении книги" };
                 }
             })
         })
         deleteRequest.on('error', (error) => {
             console.error("Ошибка при обращении к микросервису (GET):", error);
-            res.status(500).json({ error: "Ошибка при обращении к микросервису (GET)" });
+            throw { status: 500,  error: "Ошибка при обращении к микросервису (GET)" };
         });
         deleteRequest.end()
-    } catch {
-        res
-            .status(404)
-            .json("Book | not found")
     }
-}
 
-async downloadBook(req: Request, res: Response) {
-    const { id } = req.params
+async downloadBook(id: string, res: Response) {
     const book = await Book.findById(id)
     if (book) {
         const filePath = book.fileBook
@@ -214,9 +175,7 @@ async downloadBook(req: Request, res: Response) {
             })
         }
     } else {
-        res
-            .status(404)
-            .json("Book | not found")
+        throw {status: 404,  error: "Book | not found"}
     }
 }
 
