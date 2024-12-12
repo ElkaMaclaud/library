@@ -3,7 +3,7 @@ import fs from "fs"
 import dotenv from "dotenv"
 import { Response } from 'express';
 import http from 'http';
-import Book from "../../models/Book"
+import Book from "./books.model"
 import { injectable } from "inversify";
 
 dotenv.config()
@@ -29,7 +29,7 @@ dotenv.config()
 export interface IBook {
     title: string,
     description: string,
-    authors: string,
+    authors: string[],
     favorite?: string,
     fileCover?: string,
     fileName?: string,
@@ -37,7 +37,7 @@ export interface IBook {
 }
 
 @injectable()
-export class BookRepository {
+export class BookService {
     constructor(private book: typeof Book) {}
 
 async getBooks() {

@@ -1,9 +1,11 @@
 import 'reflect-metadata';
-import { Container } from 'inversify';
-import { BookRepository } from "./book/bookService"
+import { Container, decorate, injectable } from 'inversify';
+import { BookService } from "./book/books.service"
 
 const container = new Container();
-container.bind(BookRepository).toSelf();
+container.bind(BookService).toSelf();
 // container.bind(UserRepository).toSelf();
+decorate(injectable(), BookService)
+container.bind< >("BOOKS_SERVICE").to(BookService).inSingletonScope()
 
 export default container;

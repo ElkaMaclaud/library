@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express';
 import http from 'http';
-import Book from "../models/Book"
+import Book from "./book/books.model"
 
 export interface IBook {
     title: string,

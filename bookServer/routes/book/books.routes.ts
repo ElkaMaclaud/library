@@ -1,13 +1,13 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import container from '../container';
-import { BookRepository } from './bookService';
+import { BookService } from './books.service';
 
 const router = Router();
 
 router.get('/', async (req: Request, res: Response, next: NextFunction) => {
-    const repo = container.get(BookRepository);
+    const service = container.get<BookService>("BOOKS_SERVICE" );
     try {
-        const books = await repo.getBooks();
+        const books = await service.getBooks();
         res.json(books);
     } catch (e) {
         next(e);
@@ -16,9 +16,9 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
 });
 
 router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
-    const repo = container.get(BookRepository);
+    const service = container.get<BookService>("BOOKS_SERVICE" );
     try {
-        const book = await repo.getBook(req.params.id);
+        const book = await service.getBook(req.params.id);
         res.json(book);
     } catch (e) {
         next(e);
@@ -26,36 +26,36 @@ router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
 });
 
 router.post('/create', async (req: Request, res: Response, next: NextFunction) => {
-    const repo = container.get(BookRepository);
+    const service = container.get<BookService>("BOOKS_SERVICE" );
     try {
-        const newBook = await repo.createBook(req.body);
+        const newBook = await service.createBook(req.body);
         res.status(201).json(newBook);
     } catch (e) {
         next(e);
     }
 });
 router.post('/update/:id', async (req: Request, res: Response, next: NextFunction) => {
-    const repo = container.get(BookRepository);
+    const service = container.get<BookService>("BOOKS_SERVICE" );
     try {
-        const newBook = await repo.updateBook(req.params.id, req.body);
+        const newBook = await service.updateBook(req.params.id, req.body);
         res.status(201).json(newBook);
-    } catch (e) {
+    } catch (e) {  
         next(e);
     }
 });
 router.post('/delete/:id', async (req: Request, res: Response, next: NextFunction) => {
-    const repo = container.get(BookRepository);
+    const service = container.get<BookService>("BOOKS_SERVICE" );
     try {
-        const newBook = await repo.createBook(req.body);
+        const newBook = await service.createBook(req.body);
         res.status(201).json(newBook);
     } catch (e) {
         next(e);
     }
 });
 router.get('/:id/download', async (req: Request, res: Response, next: NextFunction) => {
-    const repo = container.get(BookRepository);
+    const service = container.get<BookService>("BOOKS_SERVICE" );
     try {
-        await repo.downloadBook(req.params.id, res);
+        await service.downloadBook(req.params.id, res);
     } catch (e) {
         next(e);
     }
