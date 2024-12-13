@@ -3,28 +3,10 @@ import fs from "fs"
 import dotenv from "dotenv"
 import { Response } from 'express';
 import http from 'http';
-import Book from "./books.model"
-import { injectable } from "inversify";
+import {Book} from "./books.model"
+import { inject, injectable } from "inversify";
 
 dotenv.config()
-
-// const library = {
-//     Book: []
-// }
-// const l = [1, 2, 3]
-// l.map(el => {
-//     const fileBook = path.join(__dirname + `/../public/book.png`)
-//     const newBook = new Book(
-//         `Book ${el}`,
-//         `desc Book ${el}`,
-//         `desc Book ${el}`,
-//         `desc Book ${el}`,
-//         `desc Book ${el}`,
-//         `desc Book ${el}`,
-//         fileBook)
-//     library.Book.push(newBook)
-// })
-
 
 export interface IBook {
     title: string,
@@ -36,12 +18,14 @@ export interface IBook {
     fileBook: string
 }
 
-@injectable()
+// @injectable()
 export class BookService {
-    constructor(private book: typeof Book) {}
+    constructor() { //private book: typeof Book
+        //this.book 
+    }
 
 async getBooks() {
-    const books = await this.book.find().select("-__v")
+    const books = await Book.find().select("-__v")
     return books
 }
 

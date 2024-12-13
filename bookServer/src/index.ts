@@ -1,20 +1,20 @@
 import("reflect-metadata")
 import express from "express"
-import { path } from "path"
+import path from "path"
 // import cors from "cors"
-import mongoose from "mongoose"
+// import mongoose from "mongoose"
 import dotenv from "dotenv"
 import createSocketServer from "./routes/socket"
 
-import errorMiddleware from "./middlewares/error"
+import errorMiddleware from "./middlewares/error.js"
 
 import indexRouter from './routes/index';
 import userRouter from './routes/user';
-import bookRouter from "./routes/book"
+// import bookRouter from "./routes/book"
 import bookApiRouter from "./routes/book/books.routes"
 import userApiRouter from "./routes/api/user"
 
-import "./db_connection.js"
+import "./db_connection"
 import "./container"
 
 dotenv.config()
@@ -31,16 +31,16 @@ app.set("view engine", "ejs");
 
 app.use('/', userRouter)
 app.use('/index', indexRouter)
-app.use('/book', bookRouter)
+// app.use('/book', bookRouter)
 app.use("/api/user", userApiRouter)
 app.use("/api/book", bookApiRouter)
 
 app.use(errorMiddleware)
-app.use((err, req, res, next) => {
-    res.status(500).json({
-        error: err.toString(),
-    })
-})
+// app.use((err, req, res, next) => {
+//     res.status(500).json({
+//         error: err.toString(),
+//     })
+// })
 
 const start = (async () => {
     try {

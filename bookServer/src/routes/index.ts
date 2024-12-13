@@ -1,10 +1,12 @@
+import { Response } from "express";
+
 const express = require('express');
 const router = express.Router();
 
-router.get('/', (req, res) => {
+router.get('/', (req: Request, res: Response) => {
     res.render("index", {
         title: "Главная",
     });
 });
 
-module.exports = router;
+export default router;
