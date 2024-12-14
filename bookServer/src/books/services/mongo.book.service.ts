@@ -3,33 +3,27 @@ import fs from "fs"
 import dotenv from "dotenv"
 import { Response } from 'express';
 import http from 'http';
-import {Book} from "./books.model"
-import { inject, injectable } from "inversify";
+import {Book} from "../models/book.model"
+import { CreateBookDto } from "../../domain/dto/create-book.dto";
+import { BookInterface } from "../../domain/book.interface";
+import { injectable } from "inversify";
+import { AbstractBookService } from "./abstract.book.service";
 
 dotenv.config()
 
-export interface IBook {
-    title: string,
-    description: string,
-    authors: string[],
-    favorite?: string,
-    fileCover?: string,
-    fileName?: string,
-    fileBook: string
-}
-
-// @injectable()
-export class BookService {
+@injectable()
+export class BookService extends AbstractBookService {
     constructor() { //private book: typeof Book
+        super()
         //this.book 
     }
 
-async getBooks() {
+async getBooks(): Promise<BookInterface[]> {
     const books = await Book.find().select("-__v")
     return books
 }
 
-async getBook(id: string) {
+async getBook(id: string): Promise<BookInterface | void> {
         const book = await Book.findById(id).select("-__v")
         
         const postOptions = {
@@ -97,7 +91,7 @@ async getBook(id: string) {
         postRequest.end();  
 };
 
-async createBook(book: IBook) {
+async createBook(book: CreateBookDto): Promise<BookInterface> {
     const newBook = new Book(book)
     const newBookCreate = await newBook.save()
     const response = newBookCreate.toObject();
@@ -107,12 +101,12 @@ async createBook(book: IBook) {
     return response
 }
 
-async updateBook(id: string, book: IBook){
+async updateBook(id: string, book: CreateBookDto): Promise<BookInterface> {
     const newBook = await Book.findByIdAndUpdate(id, book, { new: true, runValidators: true }).select("-__v")
     return newBook
-
 }
-async deleteBook(id: string) {
+
+async deleteBook(id: string): Promise<void> {
         await Book.findByIdAndDelete(id)
 
         const deleteOptions = {
@@ -147,7 +141,7 @@ async deleteBook(id: string) {
         deleteRequest.end()
     }
 
-async downloadBook(id: string, res: Response) {
+async downloadBook(id: string, res: Response): Promise<void> {
     const book = await Book.findById(id)
     if (book) {
         const filePath = book.fileBook

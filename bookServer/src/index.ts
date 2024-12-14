@@ -4,23 +4,23 @@ import path from "path"
 // import cors from "cors"
 // import mongoose from "mongoose"
 import dotenv from "dotenv"
-import createSocketServer from "./routes/socket"
+import createSocketServer from "./books/routes/socket"
 
-import errorMiddleware from "./middlewares/error.js"
+import errorMiddleware from "./books/middlewares/error.js"
 
-import indexRouter from './routes/index';
-import userRouter from './routes/user';
+import indexRouter from './books/routes/index';
+import userRouter from './books/routes/user';
 // import bookRouter from "./routes/book"
-import bookApiRouter from "./routes/book/books.routes"
-import userApiRouter from "./routes/api/user"
+import bookApiRouter from "./books/routes/book.routes"
+import userApiRouter from "./books/routes/api/user"
 
-import "./db_connection"
-import "./container"
+import "./mongodb.connection"
+import "./infostructure/container"
+import "./books/ioc.config"
 
 dotenv.config()
 
 const PORT = process.env.PORT || 3000
-
 
 const app = express()
 

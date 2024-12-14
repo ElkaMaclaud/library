@@ -13,11 +13,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const container_1 = __importDefault(require("../../infostructure/container"));
-const books_service_1 = require("./books.service");
+const container_1 = __importDefault(require("../infostructure/container"));
+const abstract_book_service_1 = require("./services/abstract.book.service");
 const router = (0, express_1.Router)();
 router.get('/', (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const service = container_1.default.get(books_service_1.BookService);
+    const service = container_1.default.get(abstract_book_service_1.AbstractBookService);
     try {
         const books = yield service.getBooks();
         res.json(books);
@@ -27,7 +27,7 @@ router.get('/', (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
     }
 }));
 router.get('/:id', (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const service = container_1.default.get(books_service_1.BookService);
+    const service = container_1.default.get(abstract_book_service_1.AbstractBookService);
     try {
         const book = yield service.getBook(req.params.id);
         res.json(book);
@@ -37,7 +37,7 @@ router.get('/:id', (req, res, next) => __awaiter(void 0, void 0, void 0, functio
     }
 }));
 router.post('/create', (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const service = container_1.default.get(books_service_1.BookService);
+    const service = container_1.default.get(abstract_book_service_1.AbstractBookService);
     try {
         const newBook = yield service.createBook(req.body);
         res.status(201).json(newBook);
@@ -47,7 +47,7 @@ router.post('/create', (req, res, next) => __awaiter(void 0, void 0, void 0, fun
     }
 }));
 router.post('/update/:id', (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const service = container_1.default.get(books_service_1.BookService);
+    const service = container_1.default.get(abstract_book_service_1.AbstractBookService);
     try {
         const newBook = yield service.updateBook(req.params.id, req.body);
         res.status(201).json(newBook);
@@ -57,7 +57,7 @@ router.post('/update/:id', (req, res, next) => __awaiter(void 0, void 0, void 0,
     }
 }));
 router.post('/delete/:id', (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const service = container_1.default.get(books_service_1.BookService);
+    const service = container_1.default.get(abstract_book_service_1.AbstractBookService);
     try {
         const newBook = yield service.createBook(req.body);
         res.status(201).json(newBook);
@@ -67,7 +67,7 @@ router.post('/delete/:id', (req, res, next) => __awaiter(void 0, void 0, void 0,
     }
 }));
 router.get('/:id/download', (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const service = container_1.default.get(books_service_1.BookService);
+    const service = container_1.default.get(abstract_book_service_1.AbstractBookService);
     try {
         yield service.downloadBook(req.params.id, res);
     }

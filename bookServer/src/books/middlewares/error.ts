@@ -6,8 +6,8 @@ export interface CustomError extends Error {
 }
 
 const errorMiddleware = (err: CustomError, req: Request, res: Response) => {
-    console.error("Произошла ошибка:", err);
-    res.status(err.status || 500).json({
+    // console.error("Произошла ошибка:", err);
+    res.status(err?.status || 500).json({
         message: err.message || "Внутренняя ошибка сервера",
     });
 };

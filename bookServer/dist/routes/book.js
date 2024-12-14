@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const http_1 = __importDefault(require("http"));
-const books_model_1 = require("./book/books.model");
+const book_model_1 = require("../models/book.model");
 class BookRepository {
     constructor(book, router) {
         this.book = book;
@@ -56,7 +56,7 @@ class BookRepository {
     createBook(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const book = req.body;
-            const newBook = new books_model_1.Book(book);
+            const newBook = new book_model_1.Book(book);
             try {
                 const newBookCreate = yield newBook.save();
                 const response = newBookCreate.toObject();
@@ -75,7 +75,7 @@ class BookRepository {
         return __awaiter(this, void 0, void 0, function* () {
             const { id } = req.params;
             try {
-                const book = yield books_model_1.Book.findById(id).select("-__v");
+                const book = yield book_model_1.Book.findById(id).select("-__v");
                 const postOptions = {
                     hostname: process.env.HOST,
                     port: 3001,
@@ -150,7 +150,7 @@ class BookRepository {
         return __awaiter(this, void 0, void 0, function* () {
             const { id } = req.params;
             try {
-                const book = yield books_model_1.Book.findById(id);
+                const book = yield book_model_1.Book.findById(id);
                 res.render("book/update", {
                     title: "book | view",
                     book: book,
@@ -168,7 +168,7 @@ class BookRepository {
             const book = req.body;
             try {
                 book.description = book.description.trim();
-                yield books_model_1.Book.findByIdAndUpdate(id, book, { new: true, runValidators: true }).select("-__v");
+                yield book_model_1.Book.findByIdAndUpdate(id, book, { new: true, runValidators: true }).select("-__v");
                 res.redirect(`/book/${id}`);
             }
             catch (_a) {
@@ -181,7 +181,7 @@ class BookRepository {
         return __awaiter(this, void 0, void 0, function* () {
             const { id } = req.params;
             try {
-                yield books_model_1.Book.findByIdAndDelete(id);
+                yield book_model_1.Book.findByIdAndDelete(id);
                 res.redirect(`/book`);
             }
             catch (_a) {

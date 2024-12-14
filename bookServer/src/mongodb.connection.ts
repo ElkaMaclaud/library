@@ -11,4 +11,3 @@ mongoose.connect(`mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@cluster0.0dgu9.m
 mongoose.connection.on("open", () => {
     console.log("Connected to mongodb", MONGO_USER)
 })
-

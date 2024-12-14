@@ -1,4 +1,5 @@
 import { Schema, SchemaTypes, model } from "mongoose";
+import { BookInterface } from "../../domain/book.interface";
 
 const BookModel = new Schema({
     title: SchemaTypes.String,
@@ -11,4 +12,4 @@ const BookModel = new Schema({
 });
 
 
-export const Book = model("Book", BookModel);
+export const Book = model<BookInterface & Document>("Book", BookModel);

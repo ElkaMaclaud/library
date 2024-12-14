@@ -56,10 +56,11 @@ const error_js_1 = __importDefault(require("./middlewares/error.js"));
 const index_1 = __importDefault(require("./routes/index"));
 const user_1 = __importDefault(require("./routes/user"));
 // import bookRouter from "./routes/book"
-const books_routes_1 = __importDefault(require("./routes/book/books.routes"));
+const book_routes_1 = __importDefault(require("./routes/book.routes"));
 const user_2 = __importDefault(require("./routes/api/user"));
-require("./db_connection");
-require("./container");
+require("./mongodb.connection");
+require("./infostructure/container");
+require("./ioc.config");
 dotenv_1.default.config();
 const PORT = process.env.PORT || 3000;
 const app = (0, express_1.default)();
@@ -71,7 +72,7 @@ app.use('/', user_1.default);
 app.use('/index', index_1.default);
 // app.use('/book', bookRouter)
 app.use("/api/user", user_2.default);
-app.use("/api/book", books_routes_1.default);
+app.use("/api/book", book_routes_1.default);
 app.use(error_js_1.default);
 // app.use((err, req, res, next) => {
 //     res.status(500).json({
