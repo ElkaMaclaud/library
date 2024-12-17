@@ -1,6 +1,8 @@
 ./bookServer/node_modules
+./bookServer/dist
 ./bookServer/.env
 ./counterServer/node_modules
 ./counterServer/.env
 node_modules
 .env
+

@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+require("reflect-metadata");
+const inversify_1 = require("inversify");
+const books_service_1 = require("./book/books.service");
+const container = new inversify_1.Container();
+container.bind(books_service_1.BookService).toSelf();
+// container.bind(UserRepository).toSelf();
+(0, inversify_1.decorate)((0, inversify_1.injectable)(), books_service_1.BookService);
+container.bind("BOOKS_SERVICE").to(books_service_1.BookService).inSingletonScope();
+exports.default = container;
