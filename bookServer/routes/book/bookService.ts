@@ -93,20 +93,20 @@ async getBook(id: string) {
 
                     getRequest.on('error', (error) => {
                         console.error("Ошибка при обращении к микросервису (GET):", error);
-                        throw { status: 500, error: "Ошибка при обращении к микросервису (GET)" };
+                        throw { status: 500, message: "Ошибка при обращении к микросервису (GET)" };
                     });
 
                     getRequest.end();
                 } catch (error) {
                     console.error("Ошибка при парсинге данных POST:", error);
-                    throw { status: 500, error: "Ошибка при парсинге данных POST" };
+                    throw { status: 500, message: "Ошибка при парсинге данных POST" };
                 }
             });
         });
 
         postRequest.on('error', (error) => {
             console.error("Ошибка при обращении к микросервису (POST):", error);
-            throw { status: 500, error: "Ошибка при парсинге данных POST" };
+            throw { status: 500, message: "Ошибка при парсинге данных POST" };
         });
 
         // postRequest.write(JSON.stringify({}));
@@ -158,7 +158,7 @@ async deleteBook(id: string) {
         })
         deleteRequest.on('error', (error) => {
             console.error("Ошибка при обращении к микросервису (GET):", error);
-            throw { status: 500,  error: "Ошибка при обращении к микросервису (GET)" };
+            throw { status: 500,  message: "Ошибка при обращении к микросервису (GET)" };
         });
         deleteRequest.end()
     }
@@ -175,7 +175,7 @@ async downloadBook(id: string, res: Response) {
             })
         }
     } else {
-        throw {status: 404,  error: "Book | not found"}
+        throw {status: 404,  message: "Book | not found"}
     }
 }
 
