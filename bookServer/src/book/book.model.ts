@@ -1,10 +1,10 @@
-import { Prop } from '@typegoose/typegoose';
-import { Base, TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
-import { Schema } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-export interface Book extends Base {}
-export class Book extends TimeStamps {
-  @Prop()
+export type BookDocument = Book & Document
+
+@Schema({ collection: 'Book' })
+export class Book {
+  @Prop({required: true})
   title: string;
 
   @Prop()
@@ -25,3 +25,5 @@ export class Book extends TimeStamps {
   @Prop()
   fileBook?: string
 }
+
+export const BookSchema = SchemaFactory.createForClass(Book)

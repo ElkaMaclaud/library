@@ -1,32 +1,33 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { ModelType } from '@typegoose/typegoose/lib/types';
-import { Book } from './book.model';
+import { Injectable } from '@nestjs/common';
 import { CreateBookDto } from './dto/create.book.dto';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { Book } from './book.model';
 
 @Injectable()
 export class BookService {
-    constructor(@Inject() private readonly book: ModelType<Book>) {}
+    constructor(@InjectModel('Book') private book: Model<Book>) {}
 
     async getBooks() {
-        return await this.book.find();
+        return await this.book.find().select("-__v");
     };
     
     async getBook(id: string) {
-        return await this.book.findById(id);
+        const book = await this.book.findById(id);
+        return book
     };
-    
+     
 
     async createBook(dto: CreateBookDto) {
-        // const newBook = new Book(dto)
         const newBook = await this.book.create(dto)
         return newBook.save();
     };
-
+ 
     async updateBook(id: string, dto: CreateBookDto) {
         return await this.book.findByIdAndUpdate(id, dto);
     };
 
     async deleteBook(id: string) {
-        return await this.book.findByIdAndDelete();
+        return await this.book.findByIdAndDelete(id);
     };
 }

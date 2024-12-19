@@ -8,11 +8,11 @@ export class BookController {
 
     @Get('/')
         async getBooks(){
-        return await this.bookservice.getBooks();
+            return await this.bookservice.getBooks();
     };
 
-    @Get('/:id')
-    async getBook(@Param() id: string) {
+    @Get(':id')
+    async getBook(@Param("id") id: string) {
         const book = await this.bookservice.getBook(id);
         return book
     };
@@ -22,13 +22,13 @@ export class BookController {
         return await this.bookservice.createBook(dto);
     };
 
-    @Put('/update/:id')
-    async updateBook(@Param() id: string, @Body() dto: CreateBookDto) {
+    @Put(':id')
+    async updateBook(@Param("id") id: string, @Body() dto: CreateBookDto) {
         return await this.bookservice.updateBook(id, dto);   
     };
 
-    @Delete('/delete/:id')
-    async deleteBook(@Param() id: string) {       
+    @Delete(':id')
+    async deleteBook(@Param("id") id: string) {       
        return await this.bookservice.deleteBook(id);
     };
 }

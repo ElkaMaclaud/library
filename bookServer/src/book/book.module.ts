@@ -1,24 +1,14 @@
 import { Module } from '@nestjs/common';
 import { BookService } from './book.service';
 import { BookController } from './book.controller';
-import { Book } from './book.model';
+import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule } from '@nestjs/config';
+import { BookSchema } from './book.model'; 
 
 @Module({
   imports: [
-    TypegooseModule.forFeature([
-      {
-        typegooseClass: Book,
-        schemaOptions: {
-          collection: "Book",
-        },
-      },
-    ]),
+    MongooseModule.forFeature([{ name: 'Book', schema: BookSchema }]), 
     ConfigModule,
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: getJWTConfig,
-    }),
   ],
   providers: [BookService],
   controllers: [BookController],
