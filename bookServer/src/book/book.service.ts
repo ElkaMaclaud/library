@@ -16,8 +16,7 @@ export class BookService {
         const book = await this.book.findById(id);
         return book
     };
-     
-
+    
     async createBook(dto: CreateBookDto) {
         const newBook = await this.book.create(dto)
         return newBook.save();
