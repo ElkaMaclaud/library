@@ -18,11 +18,11 @@ export class ResponseInterceptor implements NestInterceptor {
                 };
             }),
             catchError(err => {
-                const status = err.status || 500; 
-                res.status(status).json({
-                    status: "fail",
-                    data: err
-                });
+                // const status = err.status || 500; 
+                // res.status(status).json({
+                //     status: "fail",
+                //     data: err
+                // });
                 return throwError(() => err);
             })
         );
