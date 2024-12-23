@@ -4,7 +4,7 @@ import { CreateBookDto } from './dto/create.book.dto';
 import { Book } from './book.model';
 import { Observable } from 'rxjs';
 import { ResponseInterceptor } from 'src/common/interceptors/response-interceptor';
-import { ValidateDate } from 'src/common/pipes/validatedataForCreatingBook.pipe';
+import { ValidateCreateDate } from 'src/common/pipes/validatedataForCreatingBookClass-validate.pipe';
 
 @Controller('book')
 @UseInterceptors(ResponseInterceptor)
@@ -24,7 +24,7 @@ export class BookController {
     };
 
     @Post('/')
-    @UsePipes(ValidateDate)
+    @UsePipes(ValidateCreateDate)
     async createBooks(@Body() dto: CreateBookDto): Promise<Book> {
         return await this.bookservice.createBook(dto);
     };

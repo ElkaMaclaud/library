@@ -7,9 +7,9 @@ export class ValidateDate implements PipeTransform<CreateBookDto> {
 
         const val = value
 
-        if(val.authors && typeof val.authors === "string") {
-            val.authors = val.authors.split(",")
-        }
+        // if(val.authors && typeof val.authors === "string") {
+        //     val.authors = val.authors.split(",")
+        // }
 
         if(!val.title) {
             throw new BadRequestException("Not data")
