@@ -4,7 +4,7 @@ import { CreateBookDto } from './dto/create.book.dto';
 import { Book } from './book.model';
 import { Observable } from 'rxjs';
 import { ResponseInterceptor } from 'src/common/interceptors/response-interceptor';
-import { ValidateDate } from 'src/common/pipes/validate-data.pipe';
+import { ValidateDate } from 'src/common/pipes/validatedataForCreatingBook.pipe';
 
 @Controller('book')
 @UseInterceptors(ResponseInterceptor)

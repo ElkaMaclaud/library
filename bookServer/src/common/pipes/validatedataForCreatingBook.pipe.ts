@@ -2,7 +2,7 @@ import { ArgumentMetadata, BadRequestException, Injectable, PipeTransform } from
 import { CreateBookDto } from "src/book/dto/create.book.dto";
 
 @Injectable()
-export class ValidateDate implements PipeTransform {
+export class ValidateDate implements PipeTransform<CreateBookDto> {
     async transform(value: CreateBookDto, metadata: ArgumentMetadata) {
 
         const val = value
