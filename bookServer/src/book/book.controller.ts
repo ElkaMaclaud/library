@@ -1,16 +1,18 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseInterceptors } from '@nestjs/common';
 import { BookService } from './book.service';
 import { CreateBookDto } from './dto/create.book.dto';
 import { Book } from './book.model';
 import { Observable } from 'rxjs';
+import { ResponseInterceptor } from 'src/common/interceptors/response-interceptor';
 
 @Controller('book')
+@UseInterceptors(ResponseInterceptor)
 export class BookController {
     constructor(private readonly bookservice: BookService) { }
 
     @Get('/')
-        async getBooks(): Promise<Array<Book>> {
-            return await this.bookservice.getBooks();
+    async getBooks(): Promise<Array<Book>> {
+        return await this.bookservice.getBooks();
     };
 
     @Get(':id')

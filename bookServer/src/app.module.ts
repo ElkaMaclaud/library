@@ -5,6 +5,7 @@ import { BookModule } from './book/book.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { getMongoConfig } from './config/mongo.config';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -16,7 +17,8 @@ import { getMongoConfig } from './config/mongo.config';
             return await getMongoConfig(configService);
           },
         }),
-    BookModule],
+    BookModule,
+    UserModule],
   controllers: [AppController],
   providers: [AppService],
 })
