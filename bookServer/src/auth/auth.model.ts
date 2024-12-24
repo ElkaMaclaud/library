@@ -11,7 +11,7 @@ export class User {
   password: string;
 
   @Prop()
-  firstName: string[];
+  firstName: string;
 
   @Prop()
   lastName: string;

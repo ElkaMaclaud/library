@@ -1,10 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseInterceptors, UsePipes } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards, UseInterceptors, UsePipes } from '@nestjs/common';
 import { BookService } from './book.service';
 import { CreateBookDto } from './dto/create.book.dto';
 import { Book } from './book.model';
 import { Observable } from 'rxjs';
 import { ResponseInterceptor } from 'src/common/interceptors/response-interceptor';
 import { ValidateCreateDate } from 'src/common/pipes/validatedataForCreatingBookClass-validate.pipe';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.gurad';
 
 @Controller('book')
 @UseInterceptors(ResponseInterceptor)
@@ -35,6 +36,7 @@ export class BookController {
     };
 
     @Delete(':id')
+    @UseGuards(JwtAuthGuard)
     deleteBook(@Param("id") id: string): Observable<Book> {       
        return this.bookservice.deleteBook(id);
     };
