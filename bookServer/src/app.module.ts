@@ -6,6 +6,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { getMongoConfig } from './config/mongo.config';
 import { AuthModule } from './auth/auth.module';
+import { BookCommentModule } from './book-comment/book-comment.module';
+import { BookCommentsServiceService } from './book-comments-service/book-comments-service.service';
+import { BookCommentsService } from './book-comments/book-comments.service';
 
 @Module({
   imports: [
@@ -18,8 +21,9 @@ import { AuthModule } from './auth/auth.module';
           },
         }),
     BookModule,
-    AuthModule],
+    AuthModule,
+    BookCommentModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, BookCommentsServiceService, BookCommentsService],
 })
 export class AppModule {}
