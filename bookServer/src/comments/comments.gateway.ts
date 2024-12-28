@@ -9,14 +9,15 @@ import { BookIdInterceptor } from 'src/common/interceptors/bookId-Interceptor';
 @UseInterceptors(BookIdInterceptor)
 export class CommentsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @WebSocketServer() server: Server;
+    private bookId: string;
 
-    constructor(private readonly bookCommentService: BookCommentService) {}
+    constructor(private readonly bookCommentService: BookCommentService) { }
 
     handleConnection(client: any) {
         console.log(`Client connected: ${client}`);
 
-        const bookId = client.bookId;
-        this.getAllComments(client, bookId);
+        this.bookId = client.bookId;
+        this.getAllComments(client);
     }
 
     handleDisconnect(client: any) {
@@ -24,16 +25,16 @@ export class CommentsGateway implements OnGatewayConnection, OnGatewayDisconnect
     }
 
     @SubscribeMessage('getAllComments')
-    async getAllComments(client: any, bookId: string): Promise<BookComment[]> {
-        const comments = await this.bookCommentService.findAllBookComments(bookId);
-        client.emit('allComments', comments); 
+    async getAllComments(client: any): Promise<BookComment[]> {
+        const comments = await this.bookCommentService.findAllBookComments(this.bookId);
+        client.emit('allComments', comments);
         return comments;
     }
 
     @SubscribeMessage('addComment')
-    async addComment(@MessageBody() { bookId, text }: { bookId: string; text: string }): Promise<BookComment> {
-        const newComment = await this.bookCommentService.createComment(bookId, text);
+    async addComment(@MessageBody() { text }: { text: string }): Promise<BookComment> {
+        const newComment = await this.bookCommentService.createComment(this.bookId, text);
         this.server.emit('commentAdded', newComment);
-        return newComment; 
+        return newComment;
     }
 }
