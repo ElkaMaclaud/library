@@ -2,15 +2,21 @@ import { WebSocketGateway, WebSocketServer, SubscribeMessage, OnGatewayConnectio
 import { Server } from 'http';
 import { BookCommentService } from '../book-comment/book-comment.service';
 import { BookComment } from '../book-comment/book-comment.model';
+import { UseInterceptors } from '@nestjs/common';
+import { BookIdInterceptor } from 'src/common/interceptors/bookId-Interceptor';
 
 @WebSocketGateway()
+@UseInterceptors(BookIdInterceptor)
 export class CommentsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @WebSocketServer() server: Server;
 
     constructor(private readonly bookCommentService: BookCommentService) {}
 
     handleConnection(client: any) {
-        console.log(`Client connected: ${client.id}`);
+        console.log(`Client connected: ${client}`);
+
+        const bookId = client.bookId;
+        this.getAllComments(client, bookId);
     }
 
     handleDisconnect(client: any) {
@@ -18,8 +24,9 @@ export class CommentsGateway implements OnGatewayConnection, OnGatewayDisconnect
     }
 
     @SubscribeMessage('getAllComments')
-    async getAllComments(@MessageBody() bookId: string): Promise<BookComment[]> {
+    async getAllComments(client: any, bookId: string): Promise<BookComment[]> {
         const comments = await this.bookCommentService.findAllBookComments(bookId);
+        client.emit('allComments', comments); 
         return comments;
     }
 
