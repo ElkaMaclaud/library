@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { BookCommentModule } from './book-comment/book-comment.module';
 import { BookCommentsServiceService } from './book-comments-service/book-comments-service.service';
 import { BookCommentsService } from './book-comments/book-comments.service';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { BookCommentsService } from './book-comments/book-comments.service';
         }),
     BookModule,
     AuthModule,
-    BookCommentModule],
+    BookCommentModule,
+    CommentsModule],
   controllers: [AppController],
   providers: [AppService, BookCommentsServiceService, BookCommentsService],
 })
