@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@nestjs/config": "^3.3.0",
-    "@nestjs/mongoose": "^10.1.0"
+    "@nestjs/mongoose": "^10.1.0",
+    "@nestjs/platform-socket.io": "^10.4.15"
   }
 }
